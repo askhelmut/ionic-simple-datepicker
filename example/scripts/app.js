@@ -2,7 +2,7 @@
 
 'use strict';
 
-var app = angular.module('app', [ 'ionic', 'ui.router' ]);
+var app = angular.module('app', [ 'ionic', 'ui.router', 'ionic-simple-datepicker' ]);
 
 app.config(function($stateProvider, $urlRouterProvider) {
 
@@ -38,14 +38,12 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 });
 
-app.controller('AppCtrl', ['$scope', function($scope) {
+app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope, simpleDatepickerPopover) {
 
-  $scope.test = 42;
-
-}]);
-
-app.controller('HomeCtrl', ['$scope', function($scope) {
-
-  $scope.test = 42;
+  $scope.selectDate = function($event) {
+    simpleDatepickerPopover.show($event).then(function(dDate) {
+      console.log(dDate)
+    });
+  };
 
 }]);
