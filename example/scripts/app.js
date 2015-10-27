@@ -41,9 +41,13 @@ app.config(function($stateProvider, $urlRouterProvider) {
 app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope, simpleDatepickerPopover) {
 
   $scope.selectDate = function($event) {
-    simpleDatepickerPopover.show($event).then(function(dDate) {
-      console.log(dDate)
+
+    simpleDatepickerPopover.show($event, { initial: "2015-05-17", onSelected: function(dDate) {
+      console.log('On Selected', dDate.current)
+    } }).then(function(dDate) {
+      console.log('Closed Popover', dDate);
     });
+
   };
 
 }]);

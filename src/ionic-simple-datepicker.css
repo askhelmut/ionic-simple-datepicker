@@ -1,0 +1,52 @@
+.simple-datepicker
+{
+
+}
+
+.simple-datepicker__month-picker
+{
+
+}
+
+.simple-datepicker__month h1
+{
+  font-size: 16px;
+}
+
+.simple-datepicker__calendar
+{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: stretch;
+}
+
+.simple-datepicker__calendar__date, .simple-datepicker__calendar__date-header
+{
+  flex: 1;
+  flex-basis: 14.2857%;
+
+  padding: 5px;
+  border: 1px solid black;
+
+  font-size: 12px;
+
+  text-align: center;
+}
+
+.simple-datepicker__calendar__date-header
+{
+  font-weight: bold;
+}
+
+.simple-datepicker__calendar__date--not-current-month
+{
+  color: #999;
+  border-color: #999;
+}
+
+.simple-datepicker__calendar__date--selected
+{
+  background-color: red;
+}
