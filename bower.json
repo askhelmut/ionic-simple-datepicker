@@ -1,0 +1,43 @@
+{
+  "name": "ionic-simple-datepicker",
+  "description": "Simple Datepicker for Ionic / AngularJS",
+  "version": "0.0.1",
+  "authors": [
+    "marmorkuchen.net <andreas@marmorkuchen.net>"
+  ],
+  "homepage": "https://github.com/marmorkuchen-net/ionic-simple-datepicker",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/marmorkuchen-net/ionic-simple-datepicker.git"
+  },
+  "keywords": [
+    "mobile",
+    "html5",
+    "ionic",
+    "datepicker",
+    "simple",
+    "angularjs",
+    "angular"
+  ],
+  "main": "dist/ionic-simple-datepicker.js",
+  "ignore": [
+    ".jshintr",
+    "Gruntfile.js",
+    "example",
+    "package.json",
+    "src",
+    "test"
+  ],
+  "dependencies": {
+    "angular": ">1.4.0",
+    "ionic": "1.1.0"
+  },
+  "devDependencies": {
+    "angular-mocks": ">1.4.0"
+  },
+  "private": false,
+  "license": "MIT",
+  "resolutions": {
+    "angular": "1.4.7"
+  }
+}
