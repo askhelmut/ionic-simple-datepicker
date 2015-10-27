@@ -1,9 +1,11 @@
 <!doctype html>
-<html>
+<html ng-app="app">
 
   <head>
 
     <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+    
     <title>ionic simple datepicker - example</title>
 
     <script src="angular/angular.js"></script>
@@ -11,6 +13,7 @@
     <script src="angular-sanitize/angular-sanitize.js"></script>
     <script src="angular-ui-router/release/angular-ui-router.js"></script>
     <script src="ionic/release/js/ionic.js"></script>
+    <script src="ionic/release/js/ionic-angular.js"></script>
     <script src="ionic-simple-datepicker.js"></script>
 
     <script src="scripts/app.js"></script>
@@ -27,8 +30,11 @@
 
   </head>
 
-  <body ng-app="app" ng-cloak>
-    <div class="wrapper" ng-controller="AppCtrl"></div>
+  <body ng-controller="AppCtrl">
+    <ion-nav-bar class="bar-stable">
+      <ion-nav-back-button></ion-nav-back-button>
+    </ion-nav-bar>        
+    <ion-nav-view></ion-nav-view>
   </body>
 
 </html>
