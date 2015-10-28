@@ -1,4 +1,4 @@
-/* global angular */
+/* global angular, moment */
 
 'use strict';
 
@@ -40,12 +40,21 @@ app.config(function($stateProvider, $urlRouterProvider) {
 
 app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope, simpleDatepickerPopover) {
 
+  $scope.selectedDate = moment().format('YYYY-MM-DD');
+
   $scope.selectDate = function($event) {
 
-    simpleDatepickerPopover.show($event, { initial: "2015-05-17", onSelected: function(dDate) {
-      console.log('On Selected', dDate.current)
-    } }).then(function(dDate) {
+    var options = {
+      initial: $scope.selectedDate,
+      from: moment().format('YYYY-MM-DD'),
+      onSelected: function(dDate) {
+        console.log('On Selected', dDate.current);
+      }
+    };
+
+    simpleDatepickerPopover.show($event, options).then(function(dDate) {
       console.log('Closed Popover', dDate);
+      $scope.selectedDate = moment(dDate.current).format('YYYY-MM-DD');
     });
 
   };

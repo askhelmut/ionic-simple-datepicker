@@ -1,4 +1,4 @@
-(function(window, angular, undefined) {
+(function(window, angular, moment, undefined) {
 
   'use strict';
 
@@ -32,7 +32,7 @@
         var deferred = $q.defer();
 
         _popover = $ionicPopover.fromTemplate(
-          '<ion-popover-view><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" on-selected="_onSelected(current)"></simple-datepicker></ion-content></ion-popover-view>', options
+          '<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" on-selected="_onSelected(current)"></simple-datepicker></ion-content></ion-popover-view>', options
         );
 
         // event callbacks
@@ -94,13 +94,12 @@
 
     var DEFAULT_MOMENT_FORMAT = 'YYYY-MM-DD';
     var DAYS_PER_WEEK = 7;
-    var WEEKS_PER_MONTH = 4;
 
     return {
 
       restrict: 'E',
 
-      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><a class="button" ng-click="previousMonth()">Prev</a><a class="button" ng-click="nextMonth()">Next</a></div></div><div class="simple-datepicker__month"><h1 ng-bind="currentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--selected\': day.date == current }" ng-bind="day.label" ng-click="select(day)"></div></div></div>',
+      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><a class="button" ng-click="previousMonth()">Prev</a><a class="button" ng-click="nextMonth()">Next</a></div></div><div class="simple-datepicker__month"><h1 ng-bind="currentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--not-in-timeframe\': ! day.isInTimeframe, \'simple-datepicker__calendar__date--selected\': day.date == current }" ng-bind="day.label" ng-click="select(day)"></div></div></div>',
 
       scope: {
 
@@ -113,7 +112,7 @@
 
       },
 
-      link: function($scope, $elem, $attrs) {
+      link: function($scope) {
 
         var i;
 
@@ -151,9 +150,9 @@
         $scope.$watch('initial', function(dInitial) {
 
           if (! dInitial || (dInitial && ! moment(dInitial).isValid())) {
-            $scope.current = moment().format();
+            $scope.current = moment().format('YYYY-MM-DD');
           } else {
-            $scope.current = moment(dInitial, $scope.format).format();
+            $scope.current = moment(dInitial, $scope.format).format('YYYY-MM-DD');
           }
 
           $scope.focus = $scope.current;
@@ -165,20 +164,36 @@
         });
 
         $scope.$watch('focus', function(dFocus) {
-          
-          var days, day;
+
+          var data, isAfter, isBefore, days, day, formatted, splitted, currentMonth;
 
           days = [];
-  
-          for (i = 0; i < DAYS_PER_WEEK * WEEKS_PER_MONTH; i++) {
+
+          day = moment(dFocus).startOf('month').day(0);
+          currentMonth = moment(dFocus).format('MM');
+
+          i = 0;
+
+          while (moment(day).isBefore(moment(dFocus).endOf('month'))) {
 
             day = moment(dFocus).startOf('month').day(i);
+            formatted = day.format('YYYY-MM-DD');
+            splitted = formatted.split('-');
 
-            days.push({
-              date: day.format(),
-              label: day.format('DD'),
-              isInCurrentMonth: day.isSame($scope.focus, 'month')
-            });
+            data = {
+              date: formatted,
+              label: splitted[2],
+              isInCurrentMonth: splitted[1] === currentMonth
+            };
+
+            isAfter = $scope.from ? day.isAfter($scope.from) : true;
+            isBefore = $scope.to ? day.isBefore($scope.to) : true;
+
+            data.isInTimeframe = isAfter && isBefore;
+
+            days.push(data);
+
+            i++;
 
           }
 
@@ -192,4 +207,4 @@
 
   }]);
 
-})(window, window.angular);
+})(window, window.angular, window.moment);
