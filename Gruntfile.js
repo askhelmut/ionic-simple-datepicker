@@ -96,6 +96,20 @@ module.exports = function (grunt) {
       }
     },
 
+    copy: {
+      dist: {
+        files: [{
+          expand: true,
+          dot: true,
+          cwd: '<%= yeoman.src %>',
+          dest: '<%= yeoman.dist %>',
+          src: [
+            '{,*/}*.css',
+          ]
+        }]
+      }
+    },
+
     uglify: {
       options: {
         preserveComments: 'some',
@@ -149,6 +163,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'concat',
+    'copy',
     'uglify'
   ]);
 
