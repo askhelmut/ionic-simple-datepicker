@@ -235,14 +235,14 @@
 
           days = [];
 
-          day = moment(dFocus).startOf('month').day(0);
+          day = moment(dFocus).startOf('month').weekday(0);
           currentMonth = moment(dFocus).format('MM');
 
           i = 0;
 
           while (moment(day).isBefore(moment(dFocus).endOf('month'))) {
 
-            day = moment(dFocus).startOf('month').day(i);
+            day = moment(dFocus).startOf('month').weekday(i);
             formatted = day.format('YYYY-MM-DD');
             splitted = formatted.split('-');
 
@@ -253,8 +253,8 @@
               active: ! $scope.activeDays || $scope.activeDays.indexOf(formatted) > -1
             };
 
-            isAfter = $scope.from ? day.isAfter($scope.from) : true;
-            isBefore = $scope.to ? day.isBefore($scope.to) : true;
+            isAfter = $scope.from ? day.isAfter($scope.from) || day.isSame($scope.from) : true;
+            isBefore = $scope.to ? day.isBefore($scope.to) || day.isSame($scope.to) : true;
 
             data.isInTimeframe = isAfter && isBefore;
 
