@@ -59,7 +59,7 @@
   font-weight: bold;
 }
 
-.simple-datepicker__calendar__date--not-current-month, .simple-datepicker__calendar__date--not-in-timeframe
+.simple-datepicker__calendar__date--not-current-month, .simple-datepicker__calendar__date--not-in-timeframe, .simple-datepicker__calendar__date--not-active
 {
   color: #999;
   border-bottom-color: #999;

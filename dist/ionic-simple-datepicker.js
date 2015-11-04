@@ -1,4 +1,4 @@
-/*! ionic-simple-datepicker.js v0.0.1 28-10-2015 */
+/*! ionic-simple-datepicker.js v0.0.1 04-11-2015 */
 (function(window, angular, moment, undefined) {
   "use strict";
   var ionicSimpleDatepicker = angular.module("ionic-simple-datepicker", [ "ionic" ]);
@@ -16,7 +16,7 @@
         var selectedDate;
         var onSelectCallback = NOOP;
         var deferred = $q.defer();
-        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" on-selected="_onSelected(current)"></simple-datepicker></ion-content></ion-popover-view>', options);
+        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" active-days="activeDays" on-selected="_onSelected(current)"></simple-datepicker></ion-content></ion-popover-view>', options);
         _popover.scope.$on("$destroy", function() {
           _popover.remove();
         });
@@ -28,6 +28,7 @@
         if (dOptions) {
           if (dOptions.initial && moment(dOptions.initial).isValid()) {
             _popover.scope.initial = dOptions.initial;
+            selectedDate = moment(dOptions.initial).format();
           }
           if (dOptions.format && angular.isString(dOptions.format)) {
             _popover.scope.format = dOptions.format;
@@ -41,12 +42,17 @@
           if (dOptions.onSelected && angular.isFunction(dOptions.onSelected)) {
             onSelectCallback = dOptions.onSelected;
           }
+          if (dOptions.activeDays && angular.isArray(dOptions.activeDays) && dOptions.activeDays.length > 0) {
+            _popover.scope.activeDays = dOptions.activeDays;
+          }
         }
         _popover.scope._onSelected = function(dNewSelection) {
-          selectedDate = dNewSelection;
-          onSelectCallback({
-            current: dNewSelection
-          });
+          if (selectedDate !== dNewSelection) {
+            onSelectCallback({
+              current: dNewSelection
+            });
+            selectedDate = dNewSelection;
+          }
         };
         _popover.show($event);
         return deferred.promise;
@@ -57,33 +63,46 @@
   ionicSimpleDatepicker.directive("simpleDatepicker", [ function() {
     var DEFAULT_MOMENT_FORMAT = "YYYY-MM-DD";
     var DAYS_PER_WEEK = 7;
+    var DEFAULT_PREV_LABEL = "<";
+    var DEFAULT_NEXT_LABEL = ">";
     return {
       restrict: "E",
-      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><a class="button" ng-click="previousMonth()">Prev</a><a class="button" ng-click="nextMonth()">Next</a></div></div><div class="simple-datepicker__month"><h1 ng-bind="currentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--not-in-timeframe\': ! day.isInTimeframe, \'simple-datepicker__calendar__date--selected\': day.date == current }" ng-bind="day.label" ng-click="select(day)"></div></div></div>',
+      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><button class="button" ng-click="goToPreviousMonth()" ng-disabled="! hasPrevMonth()" ng-bind="prevButtonLabel"></button><button class="button" ng-click="goToNextMonth()" ng-disabled="! hasNextMonth()" ng-bind="nextButtonLabel"></button></div></div><div class="simple-datepicker__month"><h1 ng-bind="getCurrentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--not-in-timeframe\': ! day.isInTimeframe, \'simple-datepicker__calendar__date--selected\': day.date == current, \'simple-datepicker__calendar__date--not-active\': ! day.active }" ng-bind="day.label" ng-click="setSelectedDay(day)"></div></div></div>',
       scope: {
+        initial: "=",
         from: "=",
         to: "=",
-        initial: "=",
         format: "=",
+        activeDays: "=",
         onSelected: "&"
       },
       link: function($scope) {
         var i;
         $scope.days = [];
         $scope.weekdays = [];
+        $scope.prevButtonLabel = DEFAULT_PREV_LABEL;
+        $scope.nextButtonLabel = DEFAULT_NEXT_LABEL;
         for (i = 0; i < DAYS_PER_WEEK; i++) {
           $scope.weekdays.push(moment().weekday(i).format("dd"));
         }
-        $scope.select = function(eDay) {
-          $scope.current = eDay.date;
+        $scope.setSelectedDay = function(eDay) {
+          if (eDay.active) {
+            $scope.current = eDay.date;
+          }
         };
-        $scope.previousMonth = function() {
+        $scope.goToPreviousMonth = function() {
           $scope.focus = moment($scope.focus).subtract(1, "month").format();
         };
-        $scope.nextMonth = function() {
+        $scope.goToNextMonth = function() {
           $scope.focus = moment($scope.focus).add(1, "month").format();
         };
-        $scope.currentMonth = function() {
+        $scope.hasPrevMonth = function() {
+          return $scope.from ? moment($scope.focus).startOf("month").isAfter($scope.from) : true;
+        };
+        $scope.hasNextMonth = function() {
+          return $scope.to ? moment($scope.focus).endOf("month").isBefore($scope.to) : true;
+        };
+        $scope.getCurrentMonth = function() {
           return moment($scope.focus).format("MMMM YY");
         };
         $scope.$watch("format", function(dFormat) {
@@ -104,6 +123,13 @@
             current: moment(dCurrent).format()
           });
         });
+        $scope.$watch("activeDays", function(dActiveDays) {
+          if (!dActiveDays) {
+            $scope.activeDays = null;
+          } else {
+            $scope.activeDays = dActiveDays;
+          }
+        });
         $scope.$watch("focus", function(dFocus) {
           var data, isAfter, isBefore, days, day, formatted, splitted, currentMonth;
           days = [];
@@ -117,7 +143,8 @@
             data = {
               date: formatted,
               label: splitted[2],
-              isInCurrentMonth: splitted[1] === currentMonth
+              isInCurrentMonth: splitted[1] === currentMonth,
+              active: !$scope.activeDays || $scope.activeDays.indexOf(formatted) > -1
             };
             isAfter = $scope.from ? day.isAfter($scope.from) : true;
             isBefore = $scope.to ? day.isBefore($scope.to) : true;
