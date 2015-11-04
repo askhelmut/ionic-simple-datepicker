@@ -16,7 +16,7 @@
         var selectedDate;
         var onSelectCallback = NOOP;
         var deferred = $q.defer();
-        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" active-days="activeDays" on-selected="_onSelected(current)"></simple-datepicker></ion-content></ion-popover-view>', options);
+        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" active-days="activeDays" on-selected="_onSelected(current)" on-close="_onClose(current)" labels="labels"></simple-datepicker></ion-content></ion-popover-view>', options);
         _popover.scope.$on("$destroy", function() {
           _popover.remove();
         });
@@ -45,6 +45,9 @@
           if (dOptions.activeDays && angular.isArray(dOptions.activeDays) && dOptions.activeDays.length > 0) {
             _popover.scope.activeDays = dOptions.activeDays;
           }
+          if (dOptions.labels && angular.isObject(dOptions.labels)) {
+            _popover.scope.labels = dOptions.labels;
+          }
         }
         _popover.scope._onSelected = function(dNewSelection) {
           if (selectedDate !== dNewSelection) {
@@ -53,6 +56,10 @@
             });
             selectedDate = dNewSelection;
           }
+        };
+        _popover.scope._onClose = function(dNewSelection) {
+          selectedDate = dNewSelection;
+          _popover.hide();
         };
         _popover.show($event);
         return deferred.promise;
@@ -65,16 +72,19 @@
     var DAYS_PER_WEEK = 7;
     var DEFAULT_PREV_LABEL = "<";
     var DEFAULT_NEXT_LABEL = ">";
+    var DEFAULT_CLOSE_LABEL = "X";
     return {
       restrict: "E",
-      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><button class="button" ng-click="goToPreviousMonth()" ng-disabled="! hasPrevMonth()" ng-bind="prevButtonLabel"></button><button class="button" ng-click="goToNextMonth()" ng-disabled="! hasNextMonth()" ng-bind="nextButtonLabel"></button></div></div><div class="simple-datepicker__month"><h1 ng-bind="getCurrentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--not-in-timeframe\': ! day.isInTimeframe, \'simple-datepicker__calendar__date--selected\': day.date == current, \'simple-datepicker__calendar__date--not-active\': ! day.active }" ng-bind="day.label" ng-click="setSelectedDay(day)"></div></div></div>',
+      template: '<div class="simple-datepicker"><div class="simple-datepicker__month-picker"><div class="button-bar"><button class="button" ng-click="goToPreviousMonth()" ng-disabled="! hasPrevMonth()" ng-bind="prevButtonLabel"></button><button class="button" ng-click="goToNextMonth()" ng-disabled="! hasNextMonth()" ng-bind="nextButtonLabel"></button></div></div><div class="simple-datepicker__month"><h1 ng-bind="getCurrentMonth()"></h1></div><div class="simple-datepicker__calendar"><div class="simple-datepicker__calendar__date-header" ng-bind="weekday" ng-repeat="weekday in weekdays track by $index"></div><div class="simple-datepicker__calendar__date" ng-repeat="day in days track by $index" ng-class="{ \'simple-datepicker__calendar__date--not-current-month\': ! day.isInCurrentMonth, \'simple-datepicker__calendar__date--not-in-timeframe\': ! day.isInTimeframe, \'simple-datepicker__calendar__date--selected\': day.date == current, \'simple-datepicker__calendar__date--not-active\': ! day.active }" ng-bind="day.label" ng-click="setSelectedDay(day)"></div></div><div class="simple-datepicker__footer"><button class="button button-full simple-datepicker__footer__close" ng-bind="closeButtonLabel" ng-click="close()"></button></div></div>',
       scope: {
         initial: "=",
         from: "=",
         to: "=",
         format: "=",
+        labels: "=",
         activeDays: "=",
-        onSelected: "&"
+        onSelected: "&",
+        onClose: "&"
       },
       link: function($scope) {
         var i;
@@ -82,6 +92,7 @@
         $scope.weekdays = [];
         $scope.prevButtonLabel = DEFAULT_PREV_LABEL;
         $scope.nextButtonLabel = DEFAULT_NEXT_LABEL;
+        $scope.closeButtonLabel = DEFAULT_CLOSE_LABEL;
         for (i = 0; i < DAYS_PER_WEEK; i++) {
           $scope.weekdays.push(moment().weekday(i).format("dd"));
         }
@@ -105,6 +116,18 @@
         $scope.getCurrentMonth = function() {
           return moment($scope.focus).format("MMMM YY");
         };
+        $scope.close = function() {
+          $scope.onClose({
+            current: moment($scope.current).format()
+          });
+        };
+        $scope.$watch("labels", function(dLabels) {
+          if (dLabels) {
+            $scope.prevButtonLabel = dLabels.prevButton || DEFAULT_PREV_LABEL;
+            $scope.nextButtonLabel = dLabels.nextButton || DEFAULT_NEXT_LABEL;
+            $scope.closeButtonLabel = dLabels.closeButton || DEFAULT_CLOSE_LABEL;
+          }
+        });
         $scope.$watch("format", function(dFormat) {
           if (!dFormat) {
             $scope.format = DEFAULT_MOMENT_FORMAT;
