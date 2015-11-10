@@ -1,4 +1,4 @@
-/*! ionic-simple-datepicker.js v0.0.1 04-11-2015 */
+/*! ionic-simple-datepicker.js v0.0.1 10-11-2015 */
 (function(window, angular, moment, undefined) {
   "use strict";
   var ionicSimpleDatepicker = angular.module("ionic-simple-datepicker", [ "ionic" ]);
@@ -63,6 +63,16 @@
         };
         _popover.show($event);
         return deferred.promise;
+      },
+      hide: function() {
+        if (_popover && _popover.isShown()) {
+          _popover.hide();
+          return true;
+        }
+        return false;
+      },
+      isVisible: function() {
+        return _popover && _popover.isShown();
       }
     };
     return simpleDatepickerPopover;

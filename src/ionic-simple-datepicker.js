@@ -100,6 +100,18 @@
 
         return deferred.promise;
 
+      },
+
+      hide: function() {
+        if (_popover && _popover.isShown()) {
+          _popover.hide()
+          return true;
+        }
+        return false;
+      },
+
+      isVisible: function() {
+        return _popover && _popover.isShown();
       }
 
     };
