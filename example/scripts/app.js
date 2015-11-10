@@ -47,6 +47,7 @@ app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope
     var options = {
 
       initial: $scope.selectedDate,
+      backdropClickToClose: false,
 
       from: '2015-11-10',
       to: '2015-12-15',
@@ -64,6 +65,18 @@ app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope
       $scope.selectedDate = moment(dDate.current).format('YYYY-MM-DD');
     });
 
+  };
+
+}]);
+
+
+app.controller('TestCtrl', ['$scope', '$ionicPopup', function($scope, $ionicPopup) {
+
+  $scope.openAlert = function(eDate) {
+    $ionicPopup.alert({
+      title: 'DATE SELECTED',
+      template: moment(eDate).format('YYYY MMMM DD')
+    });
   };
 
 }]);

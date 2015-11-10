@@ -4,6 +4,7 @@
 {
   height: 350px;
   width: 100%;
+
   left: 0 !important;
 }
 
@@ -28,14 +29,17 @@
 {
   font-weight: bold;
   font-size: 16px;
+
   text-align: center;
 }
 
 .simple-datepicker__calendar
 {
   display: flex;
+
   flex-direction: row;
   flex-wrap: wrap;
+
   justify-content: flex-start;
   align-content: stretch;
 }
@@ -44,9 +48,11 @@
 {
   flex: 1;
   flex-basis: 14.2857%;
+
   max-width: 14.2857%;
 
   padding: 5px;
+
   border-bottom: 1px solid black;
 
   font-size: 12px;
@@ -62,11 +68,13 @@
 .simple-datepicker__calendar__date--not-current-month, .simple-datepicker__calendar__date--not-in-timeframe, .simple-datepicker__calendar__date--not-active
 {
   color: #999;
+
   border-bottom-color: #999;
 }
 
 .simple-datepicker__calendar__date--selected
 {
-  background-color: blue;
   color: #fff;
+
+  background-color: blue;
 }
