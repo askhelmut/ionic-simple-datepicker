@@ -30,7 +30,9 @@ Simple Datepicker for [Ionic](http://ionicframework.com/) / [AngularJS](https://
 <link href="bower_components/ionic-simple-datepicker/dist/ionic-simple-datepicker.css" rel="stylesheet">
 ```
 
-+ Depending on if you want to use Ionic or not, inject the `'ionic-simple-datepicker'` or `'simple-datepicker'` module into your app.
++ Dont forget to include other needed dependencies like Angular, momentJS and maybe Ionic
+
++ Depending on if you want to use Ionic or not, inject the `ionic-simple-datepicker` or `simple-datepicker` module into your app.
 
 >
 ``` JavaScript
@@ -41,7 +43,9 @@ angular.module('app', [ 'simple-datepicker' ]);
 
 ## Usage
 
-You can check the `/example` folder for working examples with this datepicker. There is two ways to use this datepicker, whether as an directive (to be directly embedded in your html, you dont need ionic for this) or as an service which will put the datepicker inside an [ionic popover](http://ionicframework.com/docs/api/service/$ionicPopover/).
+You can check the `example` folder for working examples with this datepicker.
+
+There is two ways to use this datepicker, whether as a directive (to be directly embedded in your html, you dont need ionic for this) or as a service which will put the datepicker inside an [ionic popover](http://ionicframework.com/docs/api/service/$ionicPopover/).
 
 ### Directive
 
@@ -71,7 +75,9 @@ simpleDatepickerPopover.show($event, { initial: '2015-11-10' }).then(function(dD
 
 **Methods**:
 
-+ **show($event, [options])** - open the popover (attached to target element from $event) with datepicker. Possible options:
++ **show($event, [options])** - open the popover (attached to target element from $event) with datepicker. It returns a promise which resolves after hiding the popover.
+
+Possible options:
 
 ```
 animation: 'slide-in-up'
@@ -89,7 +95,7 @@ format: return value format (default: 'YYYY-MM-DD')
 from: 'YYYY-MM-DD' format (default: infinity)
 to: 'YYYY-MM-DD' format (default: infinity)
 
-activeDays: [ 'YYYY-MM-DD', 'YYYY-MM-DD', .. ] array of days (default: empty, all days are selectable)
+activeDays: [ 'YYYY-MM-DD', 'YYYY-MM-DD', .. ] (default: empty, all days are selectable)
 
 onSelected: function callback
 onClose: function callback
