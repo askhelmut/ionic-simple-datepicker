@@ -1,13 +1,13 @@
-/*! ionic-simple-datepicker.js v0.0.1 10-11-2015 */
+/*! ionic-simple-datepicker.js v0.1.0 20-11-2015 */
 (function(window, angular, moment, undefined) {
   "use strict";
   var NOOP = function() {};
   var simpleDatepicker, ionicSimpleDatepicker;
-  // simple datepicker (without ionic dependency)
   simpleDatepicker = angular.module("simple-datepicker", []);
   simpleDatepicker.directive("simpleDatepicker", [ function() {
     var DEFAULT_MOMENT_FORMAT = "YYYY-MM-DD";
     var DEFAULT_CURRENT_MONTH_FORMAT = "MMMM YY";
+    var DEFAULT_WEEKDAY_HEADER_FORMAT = "dd";
     var DAYS_PER_WEEK = 7;
     var DEFAULT_PREV_LABEL = "<";
     var DEFAULT_NEXT_LABEL = ">";
@@ -20,6 +20,7 @@
         from: "=",
         to: "=",
         format: "=",
+        weekdayFormat: "=",
         labels: "=",
         activeDays: "=",
         onSelected: "&",
@@ -27,14 +28,19 @@
       },
       link: function($scope) {
         var i;
+        function _generateWeekdays(eFormat) {
+          console.log(eFormat);
+          var format = eFormat || DEFAULT_WEEKDAY_HEADER_FORMAT;
+          $scope.weekdays = [];
+          for (i = 0; i < DAYS_PER_WEEK; i++) {
+            $scope.weekdays.push(moment().weekday(i).format(format));
+          }
+        }
         $scope.days = [];
         $scope.weekdays = [];
         $scope.prevButtonLabel = DEFAULT_PREV_LABEL;
         $scope.nextButtonLabel = DEFAULT_NEXT_LABEL;
         $scope.closeButtonLabel = DEFAULT_CLOSE_LABEL;
-        for (i = 0; i < DAYS_PER_WEEK; i++) {
-          $scope.weekdays.push(moment().weekday(i).format("dd"));
-        }
         $scope.setSelectedDay = function(eDay) {
           if (eDay.active) {
             $scope.current = eDay.date;
@@ -60,13 +66,15 @@
             current: moment($scope.current).format()
           });
         };
-        // watchers
         $scope.$watch("labels", function(dLabels) {
           if (dLabels) {
             $scope.prevButtonLabel = dLabels.prevButton || DEFAULT_PREV_LABEL;
             $scope.nextButtonLabel = dLabels.nextButton || DEFAULT_NEXT_LABEL;
             $scope.closeButtonLabel = dLabels.closeButton || DEFAULT_CLOSE_LABEL;
           }
+        });
+        $scope.$watch("weekdayFormat", function(eFormat) {
+          _generateWeekdays(eFormat);
         });
         $scope.$watch("format", function(dFormat) {
           if (!dFormat) {
@@ -121,23 +129,19 @@
       }
     };
   } ]);
-  // ionic popover service
   ionicSimpleDatepicker = angular.module("ionic-simple-datepicker", [ "ionic", "simple-datepicker" ]);
   ionicSimpleDatepicker.factory("simpleDatepickerPopover", [ "$rootScope", "$q", "$timeout", "$ionicPopover", function($rootScope, $q, $timeout, $ionicPopover) {
     var DEFAULT_POPOVER_ANIMATION = "slide-in-up";
     var simpleDatepickerPopover;
-    // private
     var _popover;
     function _isPopoverShown() {
       return angular.isDefined(_popover) && _popover.isShown();
     }
-    // public
     simpleDatepickerPopover = {
       show: function($event, dOptions) {
         var selectedDate, onSelectCallback, deferred, userOptions, options;
         onSelectCallback = NOOP;
         deferred = $q.defer();
-        // prepare options
         userOptions = dOptions || {};
         options = {
           animation: DEFAULT_POPOVER_ANIMATION,
@@ -147,9 +151,7 @@
         };
         angular.extend(options, userOptions);
         options.scope = dOptions && dOptions.scope && dOptions.scope.$new() || $rootScope.$new(true);
-        // prepare popover
-        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" active-days="activeDays" on-selected="_onSelected(current)" on-close="_onClose(current)" labels="labels"></simple-datepicker></ion-content></ion-popover-view>', options);
-        // event callbacks
+        _popover = $ionicPopover.fromTemplate('<ion-popover-view class="simple-datepicker-popover"><ion-content scroll="false"><simple-datepicker from="from" to="to" initial="initial" active-days="activeDays" on-selected="_onSelected(current)" on-close="_onClose(current)" labels="labels" weekday-format="weekdayFormat"></simple-datepicker></ion-content></ion-popover-view>', options);
         _popover.scope.$on("$destroy", function() {
           _popover.remove();
         });
@@ -161,7 +163,6 @@
             _popover.remove();
           });
         });
-        // pass options to scope
         if (dOptions) {
           if (dOptions.initial && moment(dOptions.initial).isValid()) {
             _popover.scope.initial = dOptions.initial;
@@ -169,6 +170,9 @@
           }
           if (dOptions.format && angular.isString(dOptions.format)) {
             _popover.scope.format = dOptions.format;
+          }
+          if (dOptions.weekdayFormat && angular.isString(dOptions.weekdayFormat)) {
+            _popover.scope.weekdayFormat = dOptions.weekdayFormat;
           }
           if (dOptions.from && moment(dOptions.from).isValid()) {
             _popover.scope.from = dOptions.from;
@@ -186,7 +190,6 @@
             _popover.scope.labels = dOptions.labels;
           }
         }
-        // internal callbacks
         _popover.scope._onSelected = function(dNewSelection) {
           if (selectedDate !== dNewSelection) {
             onSelectCallback({
@@ -199,7 +202,6 @@
           selectedDate = dNewSelection;
           _popover.hide();
         };
-        // show it
         _popover.show($event);
         return deferred.promise;
       },
