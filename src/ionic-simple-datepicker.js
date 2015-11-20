@@ -54,8 +54,6 @@
 
         function _generateWeekdays(eFormat) {
 
-          console.log(eFormat);
-
           var format = eFormat || DEFAULT_WEEKDAY_HEADER_FORMAT;
 
           $scope.weekdays = [];
@@ -175,15 +173,15 @@
             formatted = day.format(DEFAULT_MOMENT_FORMAT);
             splitted = formatted.split('-');
 
+            isAfter = $scope.from ? day.isAfter($scope.from) || day.isSame($scope.from) : true;
+            isBefore = $scope.to ? day.isBefore($scope.to) || day.isSame($scope.to) : true;
+
             data = {
               date: formatted,
               label: splitted[2],
               isInCurrentMonth: splitted[1] === currentMonth,
-              active: ! $scope.activeDays || $scope.activeDays.indexOf(formatted) > -1
+              active: (! $scope.activeDays || $scope.activeDays.indexOf(formatted) > -1) && (isAfter && isBefore)
             };
-
-            isAfter = $scope.from ? day.isAfter($scope.from) || day.isSame($scope.from) : true;
-            isBefore = $scope.to ? day.isBefore($scope.to) || day.isSame($scope.to) : true;
 
             data.isInTimeframe = isAfter && isBefore;
 

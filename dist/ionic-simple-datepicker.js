@@ -1,4 +1,4 @@
-/*! ionic-simple-datepicker.js v0.1.0 20-11-2015 */
+/*! ionic-simple-datepicker.js v0.1.1 20-11-2015 */
 (function(window, angular, moment, undefined) {
   "use strict";
   var NOOP = function() {};
@@ -29,7 +29,6 @@
       link: function($scope) {
         var i;
         function _generateWeekdays(eFormat) {
-          console.log(eFormat);
           var format = eFormat || DEFAULT_WEEKDAY_HEADER_FORMAT;
           $scope.weekdays = [];
           for (i = 0; i < DAYS_PER_WEEK; i++) {
@@ -112,14 +111,14 @@
             day = moment(dFocus).startOf("month").weekday(i);
             formatted = day.format(DEFAULT_MOMENT_FORMAT);
             splitted = formatted.split("-");
+            isAfter = $scope.from ? day.isAfter($scope.from) || day.isSame($scope.from) : true;
+            isBefore = $scope.to ? day.isBefore($scope.to) || day.isSame($scope.to) : true;
             data = {
               date: formatted,
               label: splitted[2],
               isInCurrentMonth: splitted[1] === currentMonth,
-              active: !$scope.activeDays || $scope.activeDays.indexOf(formatted) > -1
+              active: (!$scope.activeDays || $scope.activeDays.indexOf(formatted) > -1) && (isAfter && isBefore)
             };
-            isAfter = $scope.from ? day.isAfter($scope.from) || day.isSame($scope.from) : true;
-            isBefore = $scope.to ? day.isBefore($scope.to) || day.isSame($scope.to) : true;
             data.isInTimeframe = isAfter && isBefore;
             days.push(data);
             i++;

@@ -19,7 +19,7 @@ Simple Datepicker for [Ionic](http://ionicframework.com/) / [AngularJS](https://
 
 >
 ``` JavaScript
-"ionic-simple-datepicker": "~0.1.0"
+"ionic-simple-datepicker": "~0.1.1"
 ```
 
 + Include the required source file (this path or similar)
