@@ -1,7 +1,7 @@
 {
   "name": "ionic-simple-datepicker",
   "description": "Simple Datepicker for Ionic / AngularJS",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "authors": [
     "marmorkuchen.net <andreas@marmorkuchen.net>"
   ],

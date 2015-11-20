@@ -19,7 +19,7 @@ Simple Datepicker for [Ionic](http://ionicframework.com/) / [AngularJS](https://
 
 >
 ``` JavaScript
-"ionic-simple-datepicker": "~0.0.1"
+"ionic-simple-datepicker": "~0.1.0"
 ```
 
 + Include the required source file (this path or similar)
@@ -91,6 +91,7 @@ hardwareBackButtonClose: true
 initial: 'YYYY-MM-DD' format (default: today)
 
 format: return value format (default: 'YYYY-MM-DD')
+weekdayFormat: format of weekday header (default: 'dd')
 
 from: 'YYYY-MM-DD' format (default: infinity)
 to: 'YYYY-MM-DD' format (default: infinity)

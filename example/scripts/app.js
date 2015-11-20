@@ -52,6 +52,8 @@ app.controller('HomeCtrl', ['$scope', 'simpleDatepickerPopover', function($scope
       from: '2015-11-10',
       to: '2015-12-15',
 
+      weekdayFormat: 'dd',
+
       activeDays: [ '2015-11-14', '2015-11-15', '2015-11-18', '2015-12-10' ],
 
       onSelected: function(dDate) {
