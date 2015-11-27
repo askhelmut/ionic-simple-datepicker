@@ -1,4 +1,4 @@
-/*! ionic-simple-datepicker.js v0.1.1 20-11-2015 */
+/*! ionic-simple-datepicker.js v0.1.2 27-11-2015 */
 (function(window, angular, moment, undefined) {
   "use strict";
   var NOOP = function() {};
@@ -43,6 +43,9 @@
         $scope.setSelectedDay = function(eDay) {
           if (eDay.active) {
             $scope.current = eDay.date;
+            $scope.onSelected({
+              current: moment($scope.current).format()
+            });
           }
         };
         $scope.goToPreviousMonth = function() {
@@ -87,11 +90,6 @@
             $scope.current = moment(dInitial, $scope.format).format(DEFAULT_MOMENT_FORMAT);
           }
           $scope.focus = $scope.current;
-        });
-        $scope.$watch("current", function(dCurrent) {
-          $scope.onSelected({
-            current: moment(dCurrent).format()
-          });
         });
         $scope.$watch("activeDays", function(dActiveDays) {
           if (!dActiveDays) {
@@ -190,12 +188,10 @@
           }
         }
         _popover.scope._onSelected = function(dNewSelection) {
-          if (selectedDate !== dNewSelection) {
-            onSelectCallback({
-              current: dNewSelection
-            });
-            selectedDate = dNewSelection;
-          }
+          onSelectCallback({
+            current: dNewSelection
+          });
+          selectedDate = dNewSelection;
         };
         _popover.scope._onClose = function(dNewSelection) {
           selectedDate = dNewSelection;

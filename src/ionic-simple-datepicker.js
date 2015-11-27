@@ -77,6 +77,7 @@
 
           if (eDay.active) {
             $scope.current = eDay.date;
+            $scope.onSelected({ current: moment($scope.current).format() });
           }
 
         };
@@ -139,10 +140,6 @@
 
           $scope.focus = $scope.current;
 
-        });
-
-        $scope.$watch('current', function(dCurrent) {
-          $scope.onSelected({ current: moment(dCurrent).format() });
         });
 
         $scope.$watch('activeDays', function(dActiveDays) {
@@ -316,12 +313,8 @@
         // internal callbacks
 
         _popover.scope._onSelected = function(dNewSelection) {
-
-          if (selectedDate !== dNewSelection) {
-            onSelectCallback({ current: dNewSelection });
-            selectedDate = dNewSelection;
-          }
-
+          onSelectCallback({ current: dNewSelection });
+          selectedDate = dNewSelection;
         };
 
         _popover.scope._onClose = function(dNewSelection) {
