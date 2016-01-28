@@ -30,16 +30,16 @@
 
       scope: {
 
-        initial: '=',
+        initial: '=?',
 
-        from: '=',
-        to: '=',
+        from: '=?',
+        to: '=?',
 
-        format: '=',
-        weekdayFormat: '=',
-        labels: '=',
+        format: '=?',
+        weekdayFormat: '=?',
+        labels: '=?',
 
-        activeDays: '=',
+        activeDays: '=?',
 
         onSelected: '&',
         onClose: '&'
