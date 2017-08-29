@@ -19,7 +19,7 @@ Simple Datepicker for [Ionic](http://ionicframework.com/) / [AngularJS](https://
 
 >
 ``` JavaScript
-"ionic-simple-datepicker": "~0.1.2"
+"ionic-simple-datepicker": "~0.1.4"
 ```
 
 + Include the required source file (this path or similar)
@@ -117,18 +117,3 @@ Check `ionic-simple-datepicker.css` for further styling of your datepicker.
 ### I18n and i10n
 
 Check the [momentJS](http://momentjs.com/) documentation for more information on this topic. The datepicker will for example change the starting weekday based on the momentJS configuration.
-
-## Development
-
-Fetch repository and set up environment
-
-    git clone git@github.com:marmorkuchen-net/ionic-simple-datepicker.git
-    npm install && bower install
-
-Start a server on localhost:9000 which is checking your js syntax and running the tests in background after every save. You can also open a browser and check the examples here.
-
-    grunt serve
-
-To build the source (in dist folder) just run
-
-    grunt
